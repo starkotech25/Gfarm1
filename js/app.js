@@ -1519,6 +1519,7 @@ function renderActionModal() {
         "add"
     ) {
         return GoatFormModal({
+            existingGoats: state.goats,
             onClose: closeModal,
 
             onSave: (newGoat) => {

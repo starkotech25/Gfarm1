@@ -5,10 +5,12 @@
  */
 
 import { Modal } from "../components/Modal.js";
+import { GOAT_BREEDS, getNextSuggestedGoatId } from "../goatMeta.js";
 
 
 export function GoatFormModal({
     initial = null,
+    existingGoats = [],
     onClose,
     onSave,
     isEdit = false
@@ -104,9 +106,15 @@ export function GoatFormModal({
        FORM ELEMENTS
        ===================================================== */
 
+    const suggestedId = !isEdit
+        ? getNextSuggestedGoatId(
+            existingGoats.map((goat) => goat.id)
+        )
+        : form.id;
+
     const idInput = createInput(
         "text",
-        form.id,
+        suggestedId,
         "e.g. GF-007",
         isEdit
     );
@@ -136,10 +144,27 @@ export function GoatFormModal({
     );
 
 
-    const breedInput = createInput(
-        "text",
-        form.breed,
-        "e.g. Sirohi, Beetal, Jamunapari"
+    const breedOptions = [
+        {
+            value: "",
+            label: "Select breed"
+        },
+        ...GOAT_BREEDS.map((breed) => ({
+            value: breed,
+            label: breed
+        }))
+    ];
+
+    if (form.breed && !GOAT_BREEDS.includes(form.breed)) {
+        breedOptions.push({
+            value: form.breed,
+            label: `${form.breed} (custom)`
+        });
+    }
+
+    const breedInput = createSelect(
+        breedOptions,
+        form.breed || ""
     );
 
 
